@@ -1,0 +1,201 @@
+@startuml SmartHomeAutomationSystem
+
+' Skinparam for better readability
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+' Interfaces
+interface SmartDevice {
+    +turnOn()
+    +turnOff()
+    +getStatus() : string
+    +getType() : string
+}
+interface Light <<interface>> {
+    +dim(level : int)
+}
+interface Thermostat <<interface>> {
+    +setTemperature(temp : int)
+    +setMode(m : string)
+}
+interface SecurityCamera <<interface>> {
+    +startRecording()
+    +stopRecording()
+    +enableNightVision()
+}
+interface DoorLock <<interface>> {
+    +lock()
+    +unlock()
+}
+interface MotionSensor <<interface>> {
+    +detectMotion()
+}
+interface DeviceFactory {
+    +createLight() : unique_ptr<Light>
+    +createThermostat() : unique_ptr<Thermostat>
+    +createSecurityCamera() : unique_ptr<SecurityCamera>
+    +createDoorLock() : unique_ptr<DoorLock>
+    +createMotionSensor() : unique_ptr<MotionSensor>
+}
+interface DeviceComponent {
+    +turnOn()
+    +turnOff()
+    +getStatus() : string
+    +getType() : string
+    +add(component : shared_ptr<DeviceComponent>)
+    +remove(component : shared_ptr<DeviceComponent>)
+}
+interface LegacyDevice {
+    +activate()
+    +deactivate()
+    +status() : string
+}
+interface Subject {
+    +attach(observer : shared_ptr<Observer>)
+    +detach(observer : shared_ptr<Observer>)
+    +notify(message : string)
+}
+interface Observer {
+    +update(message : string)
+}
+interface Command {
+    +execute()
+    +undo()
+}
+
+' Concrete Classes
+class SmartHomeHub {
+    -instance : SmartHomeHub*
+    -devices : map<string, shared_ptr<SmartDevice>>
+    -factory : unique_ptr<DeviceFactory>
+    +getInstance() : SmartHomeHub*
+    +setFactory(factory : unique_ptr<DeviceFactory>)
+    +addDevice(id : string, device : shared_ptr<SmartDevice>)
+    +getDevice(id : string) : shared_ptr<SmartDevice>
+    +createLight(id : string) : shared_ptr<Light>
+    +createThermostat(id : string) : shared_ptr<Thermostat>
+    +createSecurityCamera(id : string) : shared_ptr<SecurityCamera>
+    +createDoorLock(id : string) : shared_ptr<DoorLock>
+    +createMotionSensor(id : string) : shared_ptr<MotionSensor>
+}
+class BrandAFactory {
+    +createLight() : unique_ptr<Light>
+    +createThermostat() : unique_ptr<Thermostat>
+    +createSecurityCamera() : unique_ptr<SecurityCamera>
+    +createDoorLock() : unique_ptr<DoorLock>
+    +createMotionSensor() : unique_ptr<MotionSensor>
+}
+class BrandBFactory {
+    +createLight() : unique_ptr<Light>
+    +createThermostat() : unique_ptr<Thermostat>
+    +createSecurityCamera() : unique_ptr<SecurityCamera>
+    +createDoorLock() : unique_ptr<DoorLock>
+    +createMotionSensor() : unique_ptr<MotionSensor>
+}
+class IndividualDevice {
+    -device : shared_ptr<SmartDevice>
+    +turnOn()
+    +turnOff()
+    +getStatus() : string
+    +getType() : string
+    +add(component : shared_ptr<DeviceComponent>)
+    +remove(component : shared_ptr<DeviceComponent>)
+}
+class DeviceGroup {
+    -children : vector<shared_ptr<DeviceComponent>>
+    -name : string
+    +turnOn()
+    +turnOff()
+    +getStatus() : string
+    +getType() : string
+    +add(component : shared_ptr<DeviceComponent>)
+    +remove(component : shared_ptr<DeviceComponent>)
+}
+class LegacyLight {
+    +activate()
+    +deactivate()
+    +status() : string
+}
+class LegacyAdapter {
+    -legacyDevice : shared_ptr<LegacyDevice>
+    +turnOn()
+    +turnOff()
+    +getStatus() : string
+    +getType() : string
+    +add(component : shared_ptr<DeviceComponent>)
+    +remove(component : shared_ptr<DeviceComponent>)
+}
+class MotionSensorWithObserver {
+    +turnOn()
+    +turnOff()
+    +detectMotion()
+    +getStatus() : string
+    +getType() : string
+}
+class LightObserver {
+    -light : shared_ptr<Light>
+    +update(message : string)
+}
+class TurnOnCommand {
+    -device : shared_ptr<DeviceComponent>
+    +execute()
+    +undo()
+}
+class TurnOffCommand {
+    -device : shared_ptr<DeviceComponent>
+    +execute()
+    +undo()
+}
+class CommandQueue {
+    -commands : queue<shared_ptr<Command>>
+    -history : vector<shared_ptr<Command>>
+    +addCommand(cmd : shared_ptr<Command>)
+    +executeNext()
+    +undoLast()
+}
+
+' Relationships
+SmartDevice <|-- Light
+SmartDevice <|-- Thermostat
+SmartDevice <|-- SecurityCamera
+SmartDevice <|-- DoorLock
+SmartDevice <|-- MotionSensor
+DeviceFactory <|-- BrandAFactory
+DeviceFactory <|-- BrandBFactory
+SmartHomeHub o--> DeviceFactory
+SmartHomeHub o--> SmartDevice
+DeviceComponent <|-- IndividualDevice
+DeviceComponent <|-- DeviceGroup
+LegacyDevice <|-- LegacyLight
+LegacyAdapter o--> LegacyDevice
+DeviceComponent <|-- LegacyAdapter
+Subject <|-- MotionSensorWithObserver
+Observer <|-- LightObserver
+MotionSensorWithObserver o--> Observer
+Command <|-- TurnOnCommand
+Command <|-- TurnOffCommand
+CommandQueue o--> Command
+
+' Notes
+note right of SmartHomeHub
+  Singleton: Ensures a single hub instance
+  manages all devices.
+end note
+note right of DeviceGroup
+  Composite: Allows uniform operations
+  on devices and groups.
+end note
+note right of LegacyAdapter
+  Adapter: Integrates legacy devices
+  into the system.
+end note
+note right of MotionSensorWithObserver
+  Observer: Triggers light on motion
+  detection.
+end note
+note right of CommandQueue
+  Command: Supports queuing and
+  undoing commands.
+end note
+
+@enduml

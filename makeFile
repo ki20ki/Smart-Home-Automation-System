@@ -1,36 +1,27 @@
-cmake_minimum_required(VERSION 3.10)
-project(SmartHomeAutomation LANGUAGES CXX)
+# Compiler and flags
+CC = g++
+CFLAGS = -Iinclude -std=c++17
 
-# Set C++ standard
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+# Source and object files
+SOURCES = src/DeviceFactory.cpp src/SmartHomeHub.cpp src/DeviceGroup.cpp src/Adapter.cpp src/Observer.cpp src/Command.cpp src/main.cpp
+OBJECTS = $(SOURCES:.cpp=.o)
+EXECUTABLE = smart_home.exe
 
-# Define directories
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
+# Default target
+all: build
 
-# Find all source files
-file(GLOB_RECURSIVE SOURCES "${SOURCE_DIR}/*.cpp")
+# Build target
+build: $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(EXECUTABLE)
 
-# Include directories
-include_directories(${INCLUDE_DIR})
+# Object file generation
+%.o: %.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Create executable
-add_executable(smart_home ${SOURCES})
+# Run target (depends on build)
+run: build
+	.\$(EXECUTABLE)
 
-# Custom target for 'make build'
-add_custom_target(build
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target smart_home
-    DEPENDS smart_home
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Building the smart_home executable"
-)
-
-# Custom target for 'make run'
-add_custom_target(run
-    COMMAND ./smart_home
-    DEPENDS smart_home
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    COMMENT "Running the smart_home executable"
-)
+# Clean (optional, but included for convenience)
+clean:
+	rm -f $(OBJECTS) $(EXECUTABLE)

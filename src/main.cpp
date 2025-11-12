@@ -53,9 +53,11 @@ int main() {
     // automation example: simple mode switching
     string mode = "EnergySaving";
     if (mode == "EnergySaving") {
-        livingRoom->turnOff(); // simulate energy saving
-    } else if (mode == "Comfort") {
-        light1->dim(80); // simulate comfort mode
+        livingRoom->turnOff(); // Simulate energy saving
+        cout << "Entering Energy Saving Mode: LivingRoom turned OFF\n";
+    } 
+    else if (mode == "Comfort") {
+        light1->dim(80); // Simulate comfort mode
         thermo1->setTemperature(75);
     }
 
