@@ -1,10 +1,10 @@
 #ifndef DEVICE_FACTORY_HPP
 #define DEVICE_FACTORY_HPP
 
+using namespace std;
+
 #include "SmartDevice.hpp"
 #include <memory>
-
-using namespace std;
 
 class DeviceFactory {
 public:

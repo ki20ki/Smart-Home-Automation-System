@@ -1,12 +1,12 @@
 #ifndef DEVICE_GROUP_HPP
 #define DEVICE_GROUP_HPP
 
+using namespace std;
+
 #include "SmartDevice.hpp"
 #include <vector>
 #include <string>
 #include <memory>
-
-using namespace std;
 
 class DeviceComponent : public SmartDevice {
 public:

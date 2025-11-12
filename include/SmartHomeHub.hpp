@@ -1,12 +1,12 @@
 #ifndef SMART_HOME_HUB_HPP
 #define SMART_HOME_HUB_HPP
 
+using namespace std;
+
 #include "SmartDevice.hpp"
 #include "DeviceFactory.hpp"
 #include <map>
 #include <memory>
-
-using namespace std;
 
 class SmartHomeHub {
 private:

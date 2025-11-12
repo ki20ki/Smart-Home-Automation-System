@@ -1,10 +1,10 @@
 #ifndef SMART_DEVICE_HPP
 #define SMART_DEVICE_HPP
 
+using namespace std;
+
 #include <string>
 #include <memory>
-
-using namespace std;
 
 class SmartDevice {
 public:

@@ -1,12 +1,12 @@
 #ifndef OBSERVER_HPP
 #define OBSERVER_HPP
 
+using namespace std;
+
 #include "SmartDevice.hpp"
 #include <vector>
 #include <memory>
 #include <string>
-
-using namespace std;
 
 class Observer {
 public:

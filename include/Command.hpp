@@ -1,12 +1,12 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
+using namespace std;
+
 #include "DeviceGroup.hpp"
 #include <queue>
 #include <vector>
 #include <memory>
-
-using namespace std;
 
 class Command {
 public:

@@ -1,9 +1,9 @@
 #ifndef ADAPTER_HPP
 #define ADAPTER_HPP
 
-#include "DeviceGroup.hpp"
-
 using namespace std;
+
+#include "DeviceGroup.hpp"
 
 class LegacyDevice {
 public:
