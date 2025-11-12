@@ -1,0 +1,36 @@
+cmake_minimum_required(VERSION 3.10)
+project(SmartHomeAutomation LANGUAGES CXX)
+
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Define directories
+set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
+set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
+
+# Find all source files
+file(GLOB_RECURSIVE SOURCES "${SOURCE_DIR}/*.cpp")
+
+# Include directories
+include_directories(${INCLUDE_DIR})
+
+# Create executable
+add_executable(smart_home ${SOURCES})
+
+# Custom target for 'make build'
+add_custom_target(build
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target smart_home
+    DEPENDS smart_home
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Building the smart_home executable"
+)
+
+# Custom target for 'make run'
+add_custom_target(run
+    COMMAND ./smart_home
+    DEPENDS smart_home
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Running the smart_home executable"
+)
